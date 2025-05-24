@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zakat Calculator - Islamic Financial Calculator</title>
+    <style>
+        :root {
+            --primary-color: #086B1F;
+            --secondary-color: #0A8A2C;
+            --accent-gold: #D4AF37;
+            --light-bg: #F5F5F5;
+            --text-dark: #333;
+            --text-light: #FFF;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --error-color: #dc3545;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .calculator-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        .calculator-section:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #f8f9fa;
+        }
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(8, 107, 31, 0.1);
+            background-color: white;
+        }
+        .input-group::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 2.5rem;
+            pointer-events: none;
+        }
+        .input-group[data-currency]::after {
+            content: attr(data-currency);
+            color: #666;
+        }
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(8, 107, 31, 0.2);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            display: none;
+            border: 1px solid #e0e0e0;
+        }
+        .result p {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            background: white;
+            border-radius: var(--border-radius);
+            border: 1px solid #e0e0e0;
+        }
+        .result p span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .reference-section {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: var(--border-radius);
+            border: 1px solid #e0e0e0;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        th, td {
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 500;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+        .hadith-quote {
+            font-style: italic;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-left: 4px solid var(--accent-gold);
+            margin: 1.5rem 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .button-group button {
+            flex: 1;
+        }
+        .print-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .print-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .print-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .calculator-section {
+                padding: 1.5rem;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            header {
+                background: white !important;
+                color: black !important;
+                box-shadow: none;
+                border-bottom: 2px solid var(--primary-color);
+            }
+            .calculator-section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            table {
+                border: 1px solid #ddd;
+            }
+            th {
+                background: var(--primary-color) !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            button, .no-print {
+                display: none !important;
+            }
+            .result {
+                display: block !important;
+            }
+            .print-header {
+                display: block;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            .print-header h1 {
+                color: var(--primary-color);
+                margin-bottom: 0.5rem;
+            }
+            .print-header p {
+                color: var(--text-dark);
+            }
+            .print-footer {
+                display: block;
+                text-align: center;
+                margin-top: 2rem;
+                font-size: 0.8rem;
+                color: #666;
+            }
+            .hadith-quote {
+                border: 1px solid var(--accent-gold);
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Zakat Calculator</h1>
+        <p>Calculate your obligatory charity with Islamic guidance</p>
+    </header>
+    <div class="container">
+        <div class="calculator-section">
+            <h2>Calculate Your Zakat</h2>
+            <form id="zakatForm">
+                <div class="input-group" data-currency="">
+                    <label for="cash">Cash in Hand and Bank Accounts</label>
+                    <input type="number" id="cash" name="cash" min="0" step="0.01" required placeholder="Enter total cash amount">
+                </div>
+                <div class="input-group" data-currency="">
+                    <label for="gold">Gold Value</label>
+                    <input type="number" id="gold" name="gold" min="0" step="0.01" placeholder="Enter gold value">
+                </div>
+                <div class="input-group" data-currency="">
+                    <label for="silver">Silver Value</label>
+                    <input type="number" id="silver" name="silver" min="0" step="0.01" placeholder="Enter silver value">
+                </div>
+                <div class="input-group" data-currency="">
+                    <label for="investments">Investments and Stocks</label>
+                    <input type="number" id="investments" name="investments" min="0" step="0.01" placeholder="Enter investment value">
+                </div>
+                <div class="input-group" data-currency="">
+                    <label for="business">Business Assets</label>
+                    <input type="number" id="business" name="business" min="0" step="0.01" placeholder="Enter business assets value">
+                </div>
+                <div class="input-group" data-currency="">
+                    <label for="debts">Short-term Debts</label>
+                    <input type="number" id="debts" name="debts" min="0" step="0.01" placeholder="Enter total debts">
+                </div>
+                <div class="input-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency" name="currency" required>
+                        <option value="">Select your currency</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="AED">AED - UAE Dirham</option>
+                        <option value="SAR">SAR - Saudi Riyal</option>
+                        <option value="KWD">KWD - Kuwaiti Dinar</option>
+                        <option value="QAR">QAR - Qatari Riyal</option>
+                        <option value="BHD">BHD - Bahraini Dinar</option>
+                        <option value="OMR">OMR - Omani Rial</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="PKR">PKR - Pakistani Rupee</option>
+                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                        <option value="MYR">MYR - Malaysian Ringgit</option>
+                        <option value="IDR">IDR - Indonesian Rupiah</option>
+                        <option value="EGP">EGP - Egyptian Pound</option>
+                        <option value="MAD">MAD - Moroccan Dirham</option>
+                        <option value="NGN">NGN - Nigerian Naira</option>
+                        <option value="TRY">TRY - Turkish Lira</option>
+                        <option value="GHS">GHS - Ghana Cedis</option>
+                    </select>
+                </div>
+                <button type="submit">Calculate Zakat</button>
+            </form>
+            <div id="result" class="result">
+                <div class="print-header">
+                    <h1>Zakat Calculation Report</h1>
+                    <p>Generated on: <span id="generationDate"></span></p>
+                </div>
+                <h3>Your Zakat Calculation</h3>
+                <p>Total Zakatable Assets: <span id="totalAssets">0</span></p>
+                <p>Net Zakatable Wealth: <span id="netWealth">0</span></p>
+                <p>Zakat Due (2.5%): <span id="zakatDue">0</span></p>
+                <div class="print-footer">
+                    <p>This report was generated by the Islamic Financial Calculator</p>
+                    <p>For more information about Zakat, please consult with your local Islamic scholar</p>
+                </div>
+            </div>
+            <div class="button-group no-print">
+                <button onclick="window.print()">Download PDF Report</button>
+            </div>
+        </div>
+
+        <div class="calculator-section">
+            <h2>Understanding Zakat</h2>
+            <div class="hadith-quote">
+                "The Prophet (peace be upon him) said: 'Whoever pays the zakat on his wealth will have its evil removed from him.'" - Ibn Khuzaimah
+            </div>
+            <h3>How to Calculate Your Zakat</h3>
+            <ol>
+                <li>Determine your zakatable assets (cash, gold, silver, investments, business assets)</li>
+                <li>Subtract your short-term debts</li>
+                <li>Check if your net wealth exceeds the nisab threshold</li>
+                <li>Calculate 2.5% of your net zakatable wealth</li>
+            </ol>
+
+            <h3>Nisab Threshold</h3>
+            <p>The nisab is the minimum amount of wealth one must have before being liable to pay zakat. It is equivalent to:</p>
+            <ul>
+                <li>87.48 grams of gold, or</li>
+                <li>612.36 grams of silver</li>
+            </ul>
+
+            <h3>Zakatable Assets</h3>
+            <table>
+                <tr>
+                    <th>Asset Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>Money in bank accounts, at home, or owed to you</td>
+                </tr>
+                <tr>
+                    <td>Gold & Silver</td>
+                    <td>Including jewelry and bullion</td>
+                </tr>
+                <tr>
+                    <td>Investments</td>
+                    <td>Stocks, bonds, mutual funds</td>
+                </tr>
+                <tr>
+                    <td>Business Assets</td>
+                    <td>Inventory and goods for sale</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('zakatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Set the generation date
+            const now = new Date();
+            document.getElementById('generationDate').textContent = now.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Get all input values
+            const cash = parseFloat(document.getElementById('cash').value) || 0;
+            const gold = parseFloat(document.getElementById('gold').value) || 0;
+            const silver = parseFloat(document.getElementById('silver').value) || 0;
+            const investments = parseFloat(document.getElementById('investments').value) || 0;
+            const business = parseFloat(document.getElementById('business').value) || 0;
+            const debts = parseFloat(document.getElementById('debts').value) || 0;
+
+            // Calculate total assets
+            const totalAssets = cash + gold + silver + investments + business;
+            
+            // Calculate net wealth
+            const netWealth = totalAssets - debts;
+            
+            // Calculate zakat (2.5%)
+            const zakatDue = netWealth * 0.025;
+
+            // Display results
+            document.getElementById('totalAssets').textContent = formatCurrency(totalAssets);
+            document.getElementById('netWealth').textContent = formatCurrency(netWealth);
+            document.getElementById('zakatDue').textContent = formatCurrency(zakatDue);
+            
+            // Show result section
+            document.getElementById('result').style.display = 'block';
+        });
+
+        function formatCurrency(amount) {
+            const currency = document.getElementById('currency').value;
+            const symbol = {
+                USD: '$',
+                EUR: '€',
+                GBP: '£',
+                AED: 'د.إ',
+                SAR: '﷼',
+                KWD: 'د.ك',
+                QAR: 'ر.ق',
+                BHD: 'د.ب',
+                OMR: 'ر.ع',
+                INR: '₹',
+                PKR: '₨',
+                BDT: '৳',
+                MYR: 'RM',
+                IDR: 'Rp',
+                EGP: 'E£',
+                MAD: 'MAD',
+                NGN: '₦',
+                TRY: '₺',
+                GHS: '₵'
+            }[currency];
+            return `${symbol}${amount.toFixed(2)}`;
+        }
+
+        // Update currency display
+        document.getElementById('currency').addEventListener('change', function() {
+            const currency = this.value;
+            const symbol = {
+                USD: '$',
+                EUR: '€',
+                GBP: '£',
+                AED: 'د.إ',
+                SAR: '﷼',
+                KWD: 'د.ك',
+                QAR: 'ر.ق',
+                BHD: 'د.ب',
+                OMR: 'ر.ع',
+                INR: '₹',
+                PKR: '₨',
+                BDT: '৳',
+                MYR: 'RM',
+                IDR: 'Rp',
+                EGP: 'E£',
+                MAD: 'MAD',
+                NGN: '₦',
+                TRY: '₺',
+                GHS: '₵'
+            }[currency];
+            
+            document.querySelectorAll('.input-group[data-currency]').forEach(group => {
+                group.setAttribute('data-currency', symbol);
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1132 @@
+
+<title>Islamic Inheritance Calculator (Ilm-ul-Faraidh)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --primary: #2E7D32;
+    --secondary: #4CAF50; 
+    --accent: #81C784;
+    --text: #212121;
+    --background: #E8F5E9;
+    --success: #388E3C;
+    --error: #F44336;
+    --warning: #FFC107;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--background);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+  }
+
+  .header-subtitle {
+    font-size: 1rem;
+    margin-top: 1rem;
+    opacity: 0.8;
+  }
+
+  .stepper {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem auto;
+    position: relative;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .step {
+    flex: 1;
+    text-align: center;
+    padding: 1.2rem;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+  }
+
+  .step:hover {
+    background: var(--accent);
+    color: white;
+    border-radius: 4px;
+  }
+
+  .step.active {
+    color: var(--primary);
+    font-weight: bold;
+  }
+
+  .step::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: var(--accent);
+    top: 50%;
+    left: 50%;
+    z-index: -1;
+  }
+
+  .step:last-child::after {
+    display: none;
+  }
+
+  .form-section {
+    width: 100%;
+    max-width: 800px;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    margin: 2rem auto;
+    transition: all 0.3s ease;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: bold;
+    color: var(--text);
+    font-size: 1.1rem;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+  }
+
+  input:invalid {
+    border-color: var(--error);
+  }
+
+  input:valid {
+    border-color: var(--success);
+  }
+
+  button {
+    background: var(--primary);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 600;
+    width: auto;
+    min-width: 120px;
+    max-width: 100%;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+
+  .button-group button {
+    flex: 1 1 auto;
+    min-width: 200px;
+    max-width: 300px;
+  }
+
+  .result-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+  }
+
+  .result-card .heir-share-detail {
+    padding: 10px;
+    margin: 5px 0;
+    border-left: 3px solid var(--primary);
+    background: #f8f8f8;
+  }
+
+  .result-card .heir-share-breakdown {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #666;
+  }
+
+  .chart-container {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    min-height: 300px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .references {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .reference-item {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-left: 4px solid var(--primary);
+    background: #f8f8f8;
+    border-radius: 8px;
+  }
+
+  .reference-item h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .reference-item p {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .arabic-text {
+    font-family: "Traditional Arabic", serif; 
+    font-size: 1.4rem;
+    text-align: right;
+    direction: rtl;
+    margin: 1rem 0;
+  }
+
+  .asset-breakdown {
+    background: #f8f8f8;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+  }
+
+  .asset-breakdown h4 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .asset-breakdown p {
+    margin: 0.25rem 0;
+    font-size: 0.9em;
+  }
+
+  .heir-share-detail {
+    border-radius: 8px;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8f8f8;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  .heir-share-detail:hover {
+    transform: translateX(10px);
+  }
+
+  .heir-share-breakdown {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #fff;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  .reference-item {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  .reference-item:hover {
+    transform: scale(1.02);
+  }
+
+  input[type="checkbox"] + label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem;
+    margin-right: 1rem;
+    cursor: pointer;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 0.5rem;
+    width: auto;
+    cursor: pointer;
+  }
+
+  .heir-group {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+  }
+
+  .heir-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+  }
+
+  .heir-group input[type="checkbox"] {
+    margin-right: 0.5rem;
+  }
+
+  .heir-group input[type="checkbox"] + label {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+      width: 95%;
+    }
+    
+    header {
+      padding: 1.5rem;
+    }
+    
+    header h1 {
+      font-size: 2rem;
+    }
+    
+    header p {
+      font-size: 1rem;
+    }
+    
+    .stepper {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .step {
+      font-size: 0.9rem;
+      padding: 0.8rem;
+    }
+    
+    .step::after {
+      display: none;
+    }
+    
+    .form-section {
+      padding: 1rem;
+      margin: 1rem auto;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    input, select {
+      padding: 0.8rem;
+      font-size: 1rem;
+    }
+    
+    button {
+      padding: 0.7rem 1.2rem;
+      font-size: 0.9rem;
+      min-width: 100px;
+    }
+
+    .button-group {
+      gap: 0.5rem;
+    }
+
+    .button-group button {
+      min-width: 150px;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    header h1 {
+      font-size: 1.5rem;
+    }
+    
+    .form-group label {
+      font-size: 0.9rem;
+    }
+    
+    input, select {
+      font-size: 0.9rem;
+    }
+    
+    .heir-share-detail {
+      font-size: 0.9rem;
+    }
+
+    button {
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      min-width: 90px;
+    }
+
+    .button-group button {
+      min-width: 120px;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+      width: 90%;
+    }
+    
+    .form-section {
+      padding: 1.5rem;
+    }
+  }
+
+  @media (hover: none) {
+    .step, button, .heir-share-detail {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    input, select {
+      font-size: 16px; /* Prevents iOS zoom */
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Islamic Inheritance Calculator</h1>
+  <p>Calculate and distribute inheritance according to Islamic law (Ilm-ul-Faraidh)</p>
+  <div class="header-subtitle">Accurate, comprehensive, and Shariah-compliant calculations</div>
+</header>
+
+<div class="container">
+  <div class="stepper no-print">
+    <div class="step active" onclick="showStep(1)">1. Deceased Details</div>
+    <div class="step" onclick="showStep(2)">2. Assets</div>
+    <div class="step" onclick="showStep(3)">3. Heirs</div>
+    <div class="step" onclick="showStep(4)">4. Results</div>
+  </div>
+
+  <div id="step1" class="form-section">
+    <h2>Deceased&apos;s Details</h2>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="deceased-name">
+    </div>
+    <div class="form-group">
+      <label>Date of Death</label>
+      <input type="date" id="date-of-death">
+    </div>
+    <button onclick="nextStep(2)">Next</button>
+  </div>
+
+  <div id="step2" class="form-section" style="display: none;">
+    <h2>Assets</h2>
+    <div class="form-group">
+      <label>Total Cash</label>
+      <input type="number" id="cash-assets">
+    </div>
+    <div class="form-group">
+      <label>Property Value</label>
+      <input type="number" id="property-value">
+    </div>
+    <div class="form-group">
+      <label>Other Assets</label>
+      <input type="number" id="other-assets">
+    </div>
+    <div class="form-group">
+      <label>Business Assets</label>
+      <input type="number" id="business-assets">
+    </div>
+    <div class="form-group">
+      <label>Investment Assets</label>
+      <input type="number" id="investment-assets">
+    </div>
+    <div class="form-group">
+      <label>Currency</label>
+      <select id="currency">
+        <option value="USD">USD - US Dollar</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="GBP">GBP - British Pound</option>
+        <option value="AED">AED - UAE Dirham</option>
+        <option value="SAR">SAR - Saudi Riyal</option>
+        <option value="KWD">KWD - Kuwaiti Dinar</option>
+        <option value="QAR">QAR - Qatari Riyal</option>
+        <option value="BHD">BHD - Bahraini Dinar</option>
+        <option value="OMR">OMR - Omani Rial</option>
+        <option value="INR">INR - Indian Rupee</option>
+        <option value="PKR">PKR - Pakistani Rupee</option>
+        <option value="BDT">BDT - Bangladeshi Taka</option>
+        <option value="MYR">MYR - Malaysian Ringgit</option>
+        <option value="IDR">IDR - Indonesian Rupiah</option>
+        <option value="EGP">EGP - Egyptian Pound</option>
+        <option value="MAD">MAD - Moroccan Dirham</option>
+        <option value="NGN">NGN - Nigerian Naira</option>
+        <option value="TRY">TRY - Turkish Lira</option>
+        <option value="GHS">GHS - Ghana Cedis</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Agricultural Land Value</label>
+      <input type="number" id="agricultural-land">
+    </div>
+    <div class="form-group">
+      <label>Jewelry and Precious Metals</label>
+      <input type="number" id="jewelry-assets">
+    </div>
+    <div class="form-group">
+      <label>Outstanding Debts/Receivables</label>
+      <input type="number" id="receivables">
+    </div>
+    <div class="form-group">
+      <label>Debts Owed by Deceased</label>
+      <input type="number" id="debts-owed">
+    </div>
+    <div class="form-group">
+      <label>Vehicles and Transportation</label>
+      <input type="number" id="vehicles">
+    </div>
+    <div class="form-group">
+      <label>Intellectual Property Rights</label>
+      <input type="number" id="intellectual-property">
+    </div>
+    <div class="form-group">
+      <label>Livestock and Farm Animals</label>
+      <input type="number" id="livestock">
+    </div>
+    <div class="form-group">
+      <label>Funeral Expenses</label>
+      <input type="number" id="funeral-expenses">
+    </div>
+    <div class="form-group">
+      <label>Unpaid Zakat</label>
+      <input type="number" id="unpaid-zakat">
+    </div>
+    <button onclick="prevStep(1)">Previous</button>
+    <button onclick="nextStep(3)">Next</button>
+  </div>
+
+  <div id="step3" class="form-section" style="display: none;">
+    <h2>Heirs</h2>
+    <div id="heirs-container">
+      <div class="form-group">
+        <label>Spouse</label>
+        <select id="spouse">
+          <option value="none">None</option>
+          <option value="husband">Husband</option>
+          <option value="wife">Wife</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Parents</label>
+        <div>
+          <input type="checkbox" id="father" name="father">
+          <label for="father">Father</label>
+          <input type="checkbox" id="mother" name="mother">
+          <label for="mother">Mother</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Number of Sons</label>
+        <input type="number" id="sons" min="0">
+      </div>
+      <div class="form-group">
+        <label>Number of Daughters</label>
+        <input type="number" id="daughters" min="0">
+      </div>
+      <div class="form-group">
+        <label>Son&apos;s Sons</label>
+        <input type="number" id="sons-sons" min="0">
+      </div>
+      <div class="form-group">
+        <label>Son&apos;s Daughters</label>
+        <input type="number" id="sons-daughters" min="0">
+      </div>
+      <div class="form-group">
+        <label>Grandparents (if parents deceased)</label>
+        <div>
+          <input type="checkbox" id="paternal-grandfather" name="paternal-grandfather">
+          <label for="paternal-grandfather">Paternal Grandfather</label>
+          <input type="checkbox" id="paternal-grandmother" name="paternal-grandmother">
+          <label for="paternal-grandmother">Paternal Grandmother</label>
+          <input type="checkbox" id="maternal-grandmother" name="maternal-grandmother">
+          <label for="maternal-grandmother">Maternal Grandmother</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Siblings</label>
+        <div>
+          <label>Full Brothers: <input type="number" id="full-brothers" min="0"></label>
+          <label>Full Sisters: <input type="number" id="full-sisters" min="0"></label>
+          <label>Paternal Brothers: <input type="number" id="paternal-brothers" min="0"></label>
+          <label>Paternal Sisters: <input type="number" id="paternal-sisters" min="0"></label>
+          <label>Maternal Siblings: <input type="number" id="maternal-siblings" min="0"></label>
+        </div>
+      </div>
+    </div>
+    <div id="heirs-details" class="form-group">
+      <h3>Additional Heir Details</h3>
+      
+      <div class="heir-group">
+        <label>Grandparents:</label>
+        <div>
+          <input type="checkbox" id="paternal-grandfather2" name="paternal-grandfather2">
+          <label for="paternal-grandfather2">Paternal Grandfather</label>
+          <input type="checkbox" id="maternal-grandfather" name="maternal-grandfather">
+          <label for="maternal-grandfather">Maternal Grandfather</label>
+          <input type="checkbox" id="paternal-grandmother2" name="paternal-grandmother2">
+          <label for="paternal-grandmother2">Paternal Grandmother</label>
+          <input type="checkbox" id="maternal-grandmother2" name="maternal-grandmother2">
+          <label for="maternal-grandmother2">Maternal Grandmother</label>
+        </div>
+      </div>
+      
+      <div class="heir-group">
+        <label>Distant Relatives (Dhul Arham):</label>
+        <div>
+          <input type="checkbox" id="maternal-uncle" name="maternal-uncle">
+          <label for="maternal-uncle">Maternal Uncle</label>
+          <input type="checkbox" id="maternal-aunt" name="maternal-aunt">
+          <label for="maternal-aunt">Maternal Aunt</label>
+          <input type="checkbox" id="daughters-children" name="daughters-children">
+          <label for="daughters-children">Daughter&apos;s Children</label>
+        </div>
+      </div>
+
+      <div class="heir-group">
+        <label>Additional Details:</label>
+        <div>
+          <input type="checkbox" id="is-killer" name="is-killer">
+          <label for="is-killer">Heir Responsible for Death</label>
+          <input type="checkbox" id="different-religion" name="different-religion">
+          <label for="different-religion">Different Religion from Deceased</label>
+          <input type="checkbox" id="illegitimate" name="illegitimate">
+          <label for="illegitimate">Illegitimate Child</label>
+        </div>
+      </div>
+    </div>
+    <button onclick="prevStep(2)">Previous</button>
+    <button onclick="calculateInheritance()">Calculate</button>
+  </div>
+
+  <div id="step4" class="form-section" style="display: none;">
+    <h2>Distribution Results</h2>
+    <div class="result-card">
+      <div id="results"></div>
+      <div class="chart-container">
+        <canvas id="distributionChart"></canvas>
+      </div>
+      <div class="references">
+        <h3>Islamic References &amp; Calculations Explanation</h3>
+        <div id="reference-container"></div>
+      </div>
+    </div>
+    <div class="button-group no-print">
+      <button onclick="window.print()">Print Results</button>
+      <button onclick="saveResults()">Save Results</button>
+      <button onclick="resetCalculator()">Start New Calculation</button>
+    </div>
+  </div>
+</div>
+
+<script>document.addEventListener('DOMContentLoaded', function () {
+document.querySelectorAll('.form-section').forEach(section => {
+  section.addEventListener('keydown', handleEnterKey);
+});
+});
+const FIXED_SHARES = {
+HUSBAND: {
+  NO_CHILDREN: 1 / 2,
+  WITH_CHILDREN: 1 / 4
+},
+WIFE: {
+  NO_CHILDREN: 1 / 4,
+  WITH_CHILDREN: 1 / 8
+},
+FATHER: {
+  WITH_CHILDREN: 1 / 6,
+  NO_CHILDREN: 'RESIDUE'
+},
+MOTHER: {
+  WITH_CHILDREN_OR_SIBLINGS: 1 / 6,
+  NO_CHILDREN_WITH_SPOUSE: 1 / 3,
+  NO_CHILDREN_NO_SIBLINGS_NO_SPOUSE: 1 / 3
+},
+DAUGHTER: {
+  SINGLE: 1 / 2,
+  MULTIPLE: 2 / 3,
+  WITH_SON: 'RESIDUE_HALF'
+},
+SONS_DAUGHTER: {
+  SINGLE: 1 / 2,
+  MULTIPLE: 2 / 3,
+  WITH_SONS_SON: 'RESIDUE_HALF'
+},
+UTERINE_SIBLING: {
+  SINGLE: 1 / 6,
+  MULTIPLE: 1 / 3
+},
+FULL_SISTER: {
+  SINGLE: 1 / 2,
+  MULTIPLE: 2 / 3,
+  WITH_BROTHER: 'RESIDUE_HALF'
+},
+CONSANGUINE_SISTER: {
+  SINGLE: 1 / 2,
+  MULTIPLE: 2 / 3,
+  WITH_BROTHER: 'RESIDUE_HALF'
+},
+GRANDMOTHER: 1 / 6
+};
+const RESIDUARY_HEIRS_PRIORITY = ['father', 'sons', 'fullBrothers', 'paternalBrothers', 'fullUncles', 'paternalUncles'];
+let currentStep = 1;
+let chart = null;
+function calculateInheritance() {
+const totalEstate = calculateTotalAssets();
+const heirs = getEligibleHeirs();
+let shares = {};
+let remainingEstate = totalEstate;
+if (heirs.spouse === 'husband') {
+  shares.husband = heirs.sons || heirs.daughters ? totalEstate * FIXED_SHARES.HUSBAND.WITH_CHILDREN : totalEstate * FIXED_SHARES.HUSBAND.NO_CHILDREN;
+  remainingEstate -= shares.husband;
+} else if (heirs.spouse === 'wife') {
+  shares.wife = heirs.sons || heirs.daughters ? totalEstate * FIXED_SHARES.WIFE.WITH_CHILDREN : totalEstate * FIXED_SHARES.WIFE.NO_CHILDREN;
+  remainingEstate -= shares.wife;
+}
+if (heirs.father) {
+  const fatherShare = heirs.sons || heirs.daughters ? totalEstate * FIXED_SHARES.FATHER.WITH_CHILDREN : remainingEstate;
+  shares.father = fatherShare;
+  remainingEstate -= fatherShare;
+}
+if (heirs.mother) {
+  let motherShare;
+  if (heirs.sons || heirs.daughters || heirs.fullBrothers + heirs.fullSisters + heirs.paternalBrothers + heirs.paternalSisters + heirs.maternalSiblings >= 2) {
+    motherShare = totalEstate * FIXED_SHARES.MOTHER.WITH_CHILDREN_OR_SIBLINGS;
+  } else if (heirs.spouse) {
+    motherShare = remainingEstate * FIXED_SHARES.MOTHER.NO_CHILDREN_WITH_SPOUSE;
+  } else {
+    motherShare = totalEstate * FIXED_SHARES.MOTHER.NO_CHILDREN_NO_SIBLINGS_NO_SPOUSE;
+  }
+  shares.mother = motherShare;
+  remainingEstate -= motherShare;
+}
+if (heirs.sons > 0) {
+  const totalShares = heirs.sons * 2 + heirs.daughters;
+  shares.sons = remainingEstate * (heirs.sons * 2 / totalShares);
+  if (heirs.daughters > 0) {
+    shares.daughters = remainingEstate * (heirs.daughters / totalShares);
+  }
+  remainingEstate = 0;
+} else if (heirs.daughters > 0) {
+  if (heirs.daughters === 1) {
+    shares.daughters = remainingEstate * FIXED_SHARES.DAUGHTER.SINGLE;
+  } else {
+    shares.daughters = remainingEstate * FIXED_SHARES.DAUGHTER.MULTIPLE;
+  }
+  remainingEstate -= shares.daughters;
+}
+if (!heirs.sons && !heirs.daughters && !heirs.father) {
+  if (heirs.fullBrothers > 0 || heirs.fullSisters > 0) {
+    const totalSiblingShares = heirs.fullBrothers * 2 + heirs.fullSisters;
+    if (totalSiblingShares > 0) {
+      shares.fullBrothers = remainingEstate * (heirs.fullBrothers * 2 / totalSiblingShares);
+      shares.fullSisters = remainingEstate * (heirs.fullSisters / totalSiblingShares);
+      remainingEstate = 0;
+    }
+  } else if (heirs.maternalSiblings > 0) {
+    if (heirs.maternalSiblings === 1) {
+      shares.maternalSiblings = remainingEstate * FIXED_SHARES.UTERINE_SIBLING.SINGLE;
+    } else {
+      shares.maternalSiblings = remainingEstate * FIXED_SHARES.UTERINE_SIBLING.MULTIPLE;
+    }
+    remainingEstate -= shares.maternalSiblings;
+  }
+}
+if (remainingEstate > 0) {
+  if (shares.father) {
+    shares.father += remainingEstate;
+  } else if (shares.sons) {
+    shares.sons += remainingEstate;
+  } else if (shares.fullBrothers) {
+    shares.fullBrothers += remainingEstate;
+  }
+}
+const totalShares = Object.values(shares).reduce((sum, share) => sum + share, 0);
+if (totalShares > totalEstate) {
+  const reduction = totalEstate / totalShares;
+  for (let heir in shares) {
+    shares[heir] *= reduction;
+  }
+}
+displayResults(shares, totalEstate);
+showStep(4);
+}
+function handleEnterKey(event) {
+if (event.key === 'Enter') {
+  event.preventDefault();
+  const inputs = Array.from(document.querySelectorAll('input, select, button'));
+  const currentIndex = inputs.indexOf(document.activeElement);
+  const currentSection = document.activeElement.closest('.form-section');
+  const lastInput = Array.from(currentSection.querySelectorAll('input, select, button')).pop();
+  if (document.activeElement === lastInput) {
+    const currentStep = parseInt(currentSection.id.replace('step', ''));
+    if (currentStep < 4) {
+      nextStep(currentStep + 1);
+      const nextSection = document.getElementById(`step${currentStep + 1}`);
+      const firstInput = nextSection.querySelector('input, select');
+      if (firstInput) firstInput.focus();
+    }
+  } else {
+    inputs[currentIndex + 1]?.focus();
+  }
+}
+}
+function calculateTotalAssets() {
+return parseFloat(document.getElementById('cash-assets').value || 0) + parseFloat(document.getElementById('property-value').value || 0) + parseFloat(document.getElementById('other-assets').value || 0) + parseFloat(document.getElementById('business-assets').value || 0) + parseFloat(document.getElementById('investment-assets').value || 0) + parseFloat(document.getElementById('agricultural-land').value || 0) + parseFloat(document.getElementById('jewelry-assets').value || 0) + parseFloat(document.getElementById('receivables').value || 0) + parseFloat(document.getElementById('vehicles').value || 0) + parseFloat(document.getElementById('intellectual-property').value || 0) + parseFloat(document.getElementById('livestock').value || 0) - parseFloat(document.getElementById('debts-owed').value || 0) - parseFloat(document.getElementById('funeral-expenses').value || 0) - parseFloat(document.getElementById('unpaid-zakat').value || 0);
+}
+function getEligibleHeirs() {
+return {
+  spouse: document.getElementById('spouse').value,
+  father: document.getElementById('father').checked,
+  mother: document.getElementById('mother').checked,
+  sons: parseInt(document.getElementById('sons').value || 0),
+  daughters: parseInt(document.getElementById('daughters').value || 0),
+  paternalGrandfather: document.getElementById('paternal-grandfather').checked,
+  paternalGrandmother: document.getElementById('paternal-grandmother').checked,
+  maternalGrandmother: document.getElementById('maternal-grandmother').checked,
+  fullBrothers: parseInt(document.getElementById('full-brothers').value || 0),
+  fullSisters: parseInt(document.getElementById('full-sisters').value || 0),
+  paternalBrothers: parseInt(document.getElementById('paternal-brothers').value || 0),
+  paternalSisters: parseInt(document.getElementById('paternal-sisters').value || 0),
+  maternalSiblings: parseInt(document.getElementById('maternal-siblings').value || 0)
+};
+}
+function displayResults(shares, totalEstate) {
+const resultsDiv = document.getElementById('results');
+resultsDiv.innerHTML = '<h3>Distribution Summary</h3>';
+resultsDiv.innerHTML += '<div class="asset-breakdown">';
+resultsDiv.innerHTML += generateAssetBreakdown();
+resultsDiv.innerHTML += `</div>`;
+resultsDiv.innerHTML += `<p><strong>Net Estate Value:</strong> ${formatCurrency(totalEstate)}</p>`;
+for (const [heir, amount] of Object.entries(shares)) {
+  if (amount === 0 || amount === undefined) continue;
+  const percentage = (amount / totalEstate * 100).toFixed(2);
+  const heirName = heir.charAt(0).toUpperCase() + heir.slice(1).replace(/([A-Z])/g, ' $1');
+  const heirDiv = document.createElement('div');
+  heirDiv.className = 'heir-share-detail';
+  let breakdown = '';
+  if (heir === 'sons' || heir === 'daughters') {
+    const count = parseInt(document.getElementById(heir).value);
+    const perPerson = amount / count;
+    breakdown = `<div class="heir-share-breakdown">
+      Individual share: ${formatCurrency(perPerson)} each (${(percentage / count).toFixed(2)}% each)
+    </div>`;
+  }
+  heirDiv.innerHTML = `
+    <h4>${heirName}</h4>
+    <p>Total Share: ${formatCurrency(amount)} (${percentage}%)</p>
+    ${breakdown}
+  `;
+  resultsDiv.appendChild(heirDiv);
+}
+const referencesDiv = document.createElement('div');
+referencesDiv.className = 'references';
+referencesDiv.innerHTML = `
+  <h3>Islamic References & Calculations Explanation</h3>
+  
+  <div class="reference-item">
+    <h4>Quranic Basis</h4>
+    <p>"Allah instructs you concerning your children: for the male, what is equal to the share of two females..." (4:11)</p>
+    <p>"...For parents, to each one of them is a sixth of his estate if he left children..." (4:11)</p>
+    <p>"And for you is half of what your wives leave if they have no child..." (4:12)</p>
+  </div>
+
+  <div class="reference-item"> 
+    <h4>Hadith Evidence</h4>
+    <p>The Prophet ﷺ said: "Give the shares to those who are entitled to them, and what remains goes to the closest male relative." (Sahih Bukhari)</p>
+    <p>The Prophet ﷺ said: "Learn the laws of inheritance and teach them to people, for they are half of knowledge." (Ibn Majah)</p>
+  </div>
+
+  <div class="reference-item">
+    <h4>Calculation Methodology</h4>
+    <p>1. First, funeral expenses, debts and bequests (up to 1/3) are deducted from the total estate</p>
+    <p>2. The remaining estate is distributed to Quranic heirs (Ashabul Furud) according to their fixed shares</p>
+    <p>3. Any residue goes to agnatic heirs (Asabat) according to prescribed rules</p>
+    <p>4. If shares exceed 100%, proportional reduction (Awl) is applied</p>
+    <p>5. If there is surplus and no residuary heir, it returns to proportional heirs (Radd)</p>
+  </div>
+
+  <div class="reference-item">
+    <h4>Key Principles</h4>
+    <p>- Fixed shares are divine allocations that cannot be changed</p>
+    <p>- Males generally inherit double females' share due to financial responsibilities</p> 
+    <p>- Closer relatives exclude more distant ones</p>
+    <p>- Shares vary based on presence of other heirs</p>
+    <p>- System ensures fair and equitable distribution</p>
+  </div>
+`;
+resultsDiv.appendChild(referencesDiv);
+updateDistributionChart(shares, totalEstate);
+}
+function formatCurrency(amount) {
+if (amount === undefined || amount === null || isNaN(amount)) {
+  amount = 0;
+}
+amount = Number(amount);
+const currency = document.getElementById('currency').value;
+const symbol = {
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  AED: 'د.إ',
+  SAR: '﷼',
+  KWD: 'د.ك',
+  QAR: 'ر.ق',
+  BHD: 'د.ب',
+  OMR: 'ر.ع',
+  INR: '₹',
+  PKR: '₨',
+  BDT: '৳',
+  MYR: 'RM',
+  IDR: 'Rp',
+  EGP: 'E£',
+  MAD: 'MAD',
+  NGN: '₦',
+  TRY: '₺',
+  GHS: '₵'
+}[currency];
+return `${symbol}${amount.toFixed(2)}`;
+}
+function generateAssetBreakdown() {
+return `
+      <h4>Estate Breakdown:</h4>
+      <p>Cash: ${formatCurrency(parseFloat(document.getElementById('cash-assets').value || 0))}</p>
+      <p>Property: ${formatCurrency(parseFloat(document.getElementById('property-value').value || 0))}</p>
+      <p>Business Assets: ${formatCurrency(parseFloat(document.getElementById('business-assets').value || 0))}</p>
+      <p>Investments: ${formatCurrency(parseFloat(document.getElementById('investment-assets').value || 0))}</p>
+      <p>Agricultural Land: ${formatCurrency(parseFloat(document.getElementById('agricultural-land').value || 0))}</p>
+      <p>Jewelry/Precious Metals: ${formatCurrency(parseFloat(document.getElementById('jewelry-assets').value || 0))}</p>
+      <p>Receivables: ${formatCurrency(parseFloat(document.getElementById('receivables').value || 0))}</p>
+      <p>Debts Owed: -${formatCurrency(parseFloat(document.getElementById('debts-owed').value || 0))}</p>
+      <p>Other Assets: ${formatCurrency(parseFloat(document.getElementById('other-assets').value || 0))}</p>
+      <p>Vehicles: ${formatCurrency(parseFloat(document.getElementById('vehicles').value || 0))}</p>
+      <p>Intellectual Property: ${formatCurrency(parseFloat(document.getElementById('intellectual-property').value || 0))}</p>
+      <p>Livestock: ${formatCurrency(parseFloat(document.getElementById('livestock').value || 0))}</p>
+      <p>Funeral Expenses: -${formatCurrency(parseFloat(document.getElementById('funeral-expenses').value || 0))}</p>
+      <p>Unpaid Zakat: -${formatCurrency(parseFloat(document.getElementById('unpaid-zakat').value || 0))}</p>
+    `;
+}
+function updateDistributionChart(shares, totalAssets) {
+const ctx = document.getElementById('distributionChart').getContext('2d');
+if (chart) chart.destroy();
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: window.innerWidth < 768 ? 'top' : 'bottom',
+      labels: {
+        padding: window.innerWidth < 768 ? 10 : 20,
+        font: {
+          size: window.innerWidth < 768 ? 12 : 14
+        }
+      }
+    },
+    tooltip: {
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      titleColor: '#000',
+      bodyColor: '#000',
+      padding: 12,
+      cornerRadius: 8,
+      boxPadding: 6,
+      callbacks: {
+        label: function (context) {
+          const value = context.parsed;
+          const percentage = (value / totalAssets * 100).toFixed(2);
+          return `${formatCurrency(value)} (${percentage}%)`;
+        }
+      }
+    }
+  },
+  animation: {
+    animateScale: true,
+    animateRotate: true
+  }
+};
+chart = new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: Object.keys(shares).map(heir => heir.charAt(0).toUpperCase() + heir.slice(1).replace(/([A-Z])/g, ' $1')),
+    datasets: [{
+      data: Object.values(shares),
+      backgroundColor: ['#2E7D32', '#4CAF50', '#81C784', '#A5D6A7', '#C8E6C9', '#E8F5E9', '#66BB6A', '#43A047'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: chartOptions
+});
+}
+function showStep(step) {
+document.querySelectorAll('.form-section').forEach(section => section.style.display = 'none');
+document.getElementById(`step${step}`).style.display = 'block';
+document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+document.querySelectorAll('.step')[step - 1].classList.add('active');
+currentStep = step;
+}
+function nextStep(step) {
+showStep(step);
+}
+function prevStep(step) {
+showStep(step);
+}
+function saveResults() {
+const data = {
+  deceased: document.getElementById('deceased-name').value,
+  dateOfDeath: document.getElementById('date-of-death').value,
+  currency: document.getElementById('currency').value,
+  assets: {
+    cash: document.getElementById('cash-assets').value,
+    property: document.getElementById('property-value').value,
+    business: document.getElementById('business-assets').value,
+    investments: document.getElementById('investment-assets').value,
+    agricultural: document.getElementById('agricultural-land').value,
+    jewelry: document.getElementById('jewelry-assets').value,
+    receivables: document.getElementById('receivables').value,
+    debtsOwed: document.getElementById('debts-owed').value,
+    other: document.getElementById('other-assets').value,
+    vehicles: document.getElementById('vehicles').value,
+    intellectualProperty: document.getElementById('intellectual-property').value,
+    livestock: document.getElementById('livestock').value
+  },
+  liabilities: {
+    funeralExpenses: document.getElementById('funeral-expenses').value,
+    unpaidZakat: document.getElementById('unpaid-zakat').value
+  },
+  heirs: {
+    spouse: document.getElementById('spouse').value,
+    father: document.getElementById('father').checked,
+    mother: document.getElementById('mother').checked,
+    sons: document.getElementById('sons').value,
+    daughters: document.getElementById('daughters').value,
+    paternalGrandfather: document.getElementById('paternal-grandfather').checked,
+    paternalGrandmother: document.getElementById('paternal-grandmother').checked,
+    maternalGrandmother: document.getElementById('maternal-grandmother').checked,
+    fullBrothers: document.getElementById('full-brothers').value,
+    fullSisters: document.getElementById('full-sisters').value,
+    paternalBrothers: document.getElementById('paternal-brothers').value,
+    paternalSisters: document.getElementById('paternal-sisters').value,
+    maternalSiblings: document.getElementById('maternal-siblings').value
+  }
+};
+const blob = new Blob([JSON.stringify(data, null, 2)], {
+  type: 'application/json'
+});
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = 'inheritance-calculation.json';
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+}
+function resetCalculator() {
+document.querySelectorAll('input').forEach(input => {
+  if (input.type === 'checkbox') {
+    input.checked = false;
+  } else if (input.type === 'number') {
+    input.value = '0';
+  } else {
+    input.value = '';
+  }
+});
+document.querySelectorAll('select').forEach(select => {
+  select.selectedIndex = 0;
+});
+if (chart) {
+  chart.destroy();
+  chart = null;
+}
+document.getElementById('results').innerHTML = '';
+showStep(1);
+currentStep = 1;
+}</script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sadaqah Estimator - Islamic Financial Calculator</title>
+    <style>
+        :root {
+            --primary-color: #086B1F;
+            --secondary-color: #0A8A2C;
+            --accent-gold: #D4AF37;
+            --light-bg: #F5F5F5;
+            --text-dark: #333;
+            --text-light: #FFF;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --error-color: #dc3545;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .calculator-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        .calculator-section:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #f8f9fa;
+        }
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(8, 107, 31, 0.1);
+            background-color: white;
+        }
+        .input-group::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 2.5rem;
+            pointer-events: none;
+        }
+        .input-group[data-currency]::after {
+            content: attr(data-currency);
+            color: #666;
+        }
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(8, 107, 31, 0.2);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            display: none;
+            border: 1px solid #e0e0e0;
+        }
+        .hadith-quote {
+            font-style: italic;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-left: 4px solid var(--accent-gold);
+            margin: 1.5rem 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        .suggestion-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            border: 1px solid #e0e0e0;
+        }
+        .suggestion-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .suggestion-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .suggestion-card .amount {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            display: inline-block;
+        }
+        .reference-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: var(--border-radius);
+            border: 1px solid #e0e0e0;
+        }
+        .reference-section h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .button-group button {
+            flex: 1;
+        }
+        .print-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .print-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .print-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .calculator-section {
+                padding: 1.5rem;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+        }
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            header {
+                background: white !important;
+                color: black !important;
+                box-shadow: none;
+                border-bottom: 2px solid var(--primary-color);
+            }
+            .calculator-section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            .suggestion-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            .suggestion-card:hover {
+                transform: none;
+            }
+            button, .no-print {
+                display: none !important;
+            }
+            .result {
+                display: block !important;
+            }
+            .print-header {
+                display: block;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            .print-header h1 {
+                color: var(--primary-color);
+                margin-bottom: 0.5rem;
+            }
+            .print-header p {
+                color: var(--text-dark);
+            }
+            .print-footer {
+                display: block;
+                text-align: center;
+                margin-top: 2rem;
+                font-size: 0.8rem;
+                color: #666;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sadaqah Estimator</h1>
+        <p>Calculate and plan your voluntary charity with Islamic guidance</p>
+    </header>
+    <div class="container">
+        <div class="calculator-section">
+            <h2>Calculate Your Sadaqah</h2>
+            <form id="sadaqahForm">
+                <div class="input-group" data-currency="">
+                    <label for="income">Monthly Income</label>
+                    <input type="number" id="income" name="income" min="0" step="0.01" required placeholder="Enter your monthly income">
+                </div>
+                <div class="input-group" data-currency="">
+                    <label for="expenses">Monthly Expenses</label>
+                    <input type="number" id="expenses" name="expenses" min="0" step="0.01" required placeholder="Enter your monthly expenses">
+                </div>
+                <div class="input-group" data-currency="">
+                    <label for="savings">Current Savings</label>
+                    <input type="number" id="savings" name="savings" min="0" step="0.01" placeholder="Enter your current savings">
+                </div>
+                <div class="input-group">
+                    <label for="circumstances">Your Current Circumstances</label>
+                    <select id="circumstances" name="circumstances" required>
+                        <option value="">Select your circumstances</option>
+                        <option value="stable">Stable and Comfortable</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="challenging">Challenging</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="frequency">Preferred Giving Frequency</label>
+                    <select id="frequency" name="frequency" required>
+                        <option value="">Select giving frequency</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="annually">Annually</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency" name="currency" required>
+                        <option value="">Select your currency</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="AED">AED - UAE Dirham</option>
+                        <option value="SAR">SAR - Saudi Riyal</option>
+                        <option value="KWD">KWD - Kuwaiti Dinar</option>
+                        <option value="QAR">QAR - Qatari Riyal</option>
+                        <option value="BHD">BHD - Bahraini Dinar</option>
+                        <option value="OMR">OMR - Omani Rial</option>
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="PKR">PKR - Pakistani Rupee</option>
+                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                        <option value="MYR">MYR - Malaysian Ringgit</option>
+                        <option value="IDR">IDR - Indonesian Rupiah</option>
+                        <option value="EGP">EGP - Egyptian Pound</option>
+                        <option value="MAD">MAD - Moroccan Dirham</option>
+                        <option value="NGN">NGN - Nigerian Naira</option>
+                        <option value="TRY">TRY - Turkish Lira</option>
+                        <option value="GHS">GHS - Ghana Cedis</option>
+                    </select>
+                </div>
+                <button type="submit">Calculate Sadaqah</button>
+            </form>
+            <div id="result" class="result">
+                <div class="print-header">
+                    <h1>Sadaqah Calculation Report</h1>
+                    <p>Generated on: <span id="generationDate"></span></p>
+                </div>
+                <h3>Your Sadaqah Suggestions</h3>
+                <div id="suggestions"></div>
+                <div class="print-footer">
+                    <p>This report was generated by the Islamic Financial Calculator</p>
+                    <p>For more information about Sadaqah, please consult with your local Islamic scholar</p>
+                </div>
+            </div>
+            <div class="button-group no-print">
+                <button onclick="window.print()">Download PDF Report</button>
+            </div>
+        </div>
+
+        <div class="calculator-section">
+            <h2>Understanding Sadaqah</h2>
+            <div class="hadith-quote">
+                "The Prophet (peace be upon him) said: 'The believer's shade on the Day of Resurrection will be his charity.'" - Tirmidhi
+            </div>
+            <h3>What is Sadaqah?</h3>
+            <p>Sadaqah is voluntary charity given out of compassion, love, friendship, religious duty, or generosity. Unlike Zakat, which is obligatory, Sadaqah is given freely and can be given to anyone in need.</p>
+
+            <h3>Benefits of Sadaqah</h3>
+            <ul>
+                <li>Purifies wealth and soul</li>
+                <li>Increases blessings in life</li>
+                <li>Protects from calamities</li>
+                <li>Earns rewards in the Hereafter</li>
+                <li>Strengthens community bonds</li>
+            </ul>
+
+            <h3>Types of Sadaqah</h3>
+            <div class="reference-section">
+                <h4>Financial Sadaqah</h4>
+                <p>Giving money or material possessions to those in need</p>
+                
+                <h4>Sadaqah Jariyah</h4>
+                <p>Continuous charity that benefits others even after your death, such as:</p>
+                <ul>
+                    <li>Building a mosque</li>
+                    <li>Digging a well</li>
+                    <li>Planting trees</li>
+                    <li>Providing education</li>
+                </ul>
+
+                <h4>Non-Material Sadaqah</h4>
+                <p>Acts of kindness that don't involve money:</p>
+                <ul>
+                    <li>Helping others</li>
+                    <li>Sharing knowledge</li>
+                    <li>Good words and advice</li>
+                    <li>Smiling at others</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('sadaqahForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Set the generation date
+            const now = new Date();
+            document.getElementById('generationDate').textContent = now.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Get input values
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+            const circumstances = document.getElementById('circumstances').value;
+            const frequency = document.getElementById('frequency').value;
+
+            // Calculate disposable income
+            const disposableIncome = income - expenses;
+            
+            // Calculate suggestions based on circumstances
+            let suggestions = [];
+            const suggestionsDiv = document.getElementById('suggestions');
+            suggestionsDiv.innerHTML = '';
+
+            if (circumstances === 'stable') {
+                suggestions.push({
+                    title: 'Regular Monthly Sadaqah',
+                    amount: disposableIncome * 0.1,
+                    description: 'A comfortable 10% of your disposable income'
+                });
+                suggestions.push({
+                    title: 'Sadaqah Jariyah Project',
+                    amount: savings * 0.05,
+                    description: '5% of your savings for a long-term charitable project'
+                });
+            } else if (circumstances === 'moderate') {
+                suggestions.push({
+                    title: 'Regular Monthly Sadaqah',
+                    amount: disposableIncome * 0.05,
+                    description: 'A moderate 5% of your disposable income'
+                });
+            } else {
+                suggestions.push({
+                    title: 'Small Regular Sadaqah',
+                    amount: disposableIncome * 0.02,
+                    description: 'A small 2% of your disposable income'
+                });
+            }
+
+            // Add non-material suggestions
+            suggestions.push({
+                title: 'Non-Material Sadaqah',
+                amount: 0,
+                description: 'Consider these acts of kindness:',
+                items: [
+                    'Volunteer your time',
+                    'Share your knowledge',
+                    'Help neighbors',
+                    'Spread good words'
+                ]
+            });
+
+            // Display suggestions
+            suggestions.forEach(suggestion => {
+                const card = document.createElement('div');
+                card.className = 'suggestion-card';
+                
+                let content = `<h4>${suggestion.title}</h4>`;
+                if (suggestion.amount > 0) {
+                    content += `<p class="amount">${formatCurrency(suggestion.amount)} ${frequency}</p>`;
+                }
+                content += `<p>${suggestion.description}</p>`;
+                
+                if (suggestion.items) {
+                    content += '<ul>';
+                    suggestion.items.forEach(item => {
+                        content += `<li>${item}</li>`;
+                    });
+                    content += '</ul>';
+                }
+                
+                card.innerHTML = content;
+                suggestionsDiv.appendChild(card);
+            });
+
+            // Show result section
+            document.getElementById('result').style.display = 'block';
+        });
+
+        function formatCurrency(amount) {
+            const currency = document.getElementById('currency').value;
+            const symbol = {
+                USD: '$',
+                EUR: '€',
+                GBP: '£',
+                AED: 'د.إ',
+                SAR: '﷼',
+                KWD: 'د.ك',
+                QAR: 'ر.ق',
+                BHD: 'د.ب',
+                OMR: 'ر.ع',
+                INR: '₹',
+                PKR: '₨',
+                BDT: '৳',
+                MYR: 'RM',
+                IDR: 'Rp',
+                EGP: 'E£',
+                MAD: 'MAD',
+                NGN: '₦',
+                TRY: '₺',
+                GHS: '₵'
+            }[currency];
+            return `${symbol}${amount.toFixed(2)}`;
+        }
+
+        // Update currency display
+        document.getElementById('currency').addEventListener('change', function() {
+            const currency = this.value;
+            const symbol = {
+                USD: '$',
+                EUR: '€',
+                GBP: '£',
+                AED: 'د.إ',
+                SAR: '﷼',
+                KWD: 'د.ك',
+                QAR: 'ر.ق',
+                BHD: 'د.ب',
+                OMR: 'ر.ع',
+                INR: '₹',
+                PKR: '₨',
+                BDT: '৳',
+                MYR: 'RM',
+                IDR: 'Rp',
+                EGP: 'E£',
+                MAD: 'MAD',
+                NGN: '₦',
+                TRY: '₺',
+                GHS: '₵'
+            }[currency];
+            
+            document.querySelectorAll('.input-group[data-currency]').forEach(group => {
+                group.setAttribute('data-currency', symbol);
+            });
+        });
+    </script>
+</body>
+</html> 

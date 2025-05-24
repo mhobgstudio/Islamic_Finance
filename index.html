@@ -1,0 +1,143 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Financial Calculator</title>
+    <style>
+        :root {
+            --primary-color: #086B1F;
+            --secondary-color: #0A8A2C;
+            --accent-gold: #D4AF37;
+            --light-bg: #F5F5F5;
+            --text-dark: #333;
+            --text-light: #FFF;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .calculator-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            color: var(--text-dark);
+            display: block;
+        }
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .calculator-icon {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        .calculator-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        nav {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+        }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 2rem;
+        }
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Islamic Financial Calculator</h1>
+        <p>Sharia-compliant financial tools and education</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#">Calculators</a></li>
+            <li><a href="#">Learn</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>Financial Calculators</h2>
+        <div class="calculator-grid">
+            <a href="zakat-calculator.html" class="calculator-card">
+                <div class="calculator-icon">💰</div>
+                <h3 class="calculator-title">Zakat Calculator</h3>
+                <p>Calculate your obligatory charity based on income, savings, and assets.</p>
+            </a>
+            <a href="sadaqah-calculator.html" class="calculator-card">
+                <div class="calculator-icon">🤲</div>
+                <h3 class="calculator-title">Sadaqah Estimator</h3>
+                <p>Get suggestions for voluntary charity based on your circumstances.</p>
+            </a>
+            <a href="inheritance.html" class="calculator-card">
+                <div class="calculator-icon">📜</div>
+                <h3 class="calculator-title">Inheritance Calculator</h3>
+                <p>Determine inheritance distribution according to Islamic law.</p>
+            </a>
+        </div>
+    </div>
+    <footer>
+        <p>© 2023 Islamic Financial Calculator. All rights reserved.</p>
+    </footer>
+    <script>
+        // Calculator card click handlers
+        document.querySelectorAll('.calculator-card').forEach(card => {
+            if (!card.href) {  // Only add click handler to non-linked cards
+                card.addEventListener('click', () => {
+                    const title = card.querySelector('.calculator-title').textContent;
+                    alert(`Loading ${title}... (Would navigate to calculator page in full implementation)`);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

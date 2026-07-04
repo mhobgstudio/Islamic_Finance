@@ -1,8 +1,14 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Islamic Financial Calculator</title>
+    <title>Islamic Financial Calculator - Zakat, Sadaqah & Inheritance</title>
+    <meta name="description" content="Sharia-compliant financial calculators for Zakat, Sadaqah, and Islamic inheritance distribution. Free Islamic finance tools.">
+    <meta property="og:title" content="Islamic Financial Calculator">
+    <meta property="og:description" content="Sharia-compliant financial tools: Zakat calculator, Sadaqah estimator, and Islamic inheritance distribution.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
     <style>
         :root {
             --primary-color: #086B1F;
@@ -126,9 +132,11 @@
         </div>
     </div>
     <footer>
-        <p>© 2023 Islamic Financial Calculator. All rights reserved.</p>
+        <p>&copy; <span id="year">2023</span> Islamic Financial Calculator. All rights reserved.</p>
     </footer>
     <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        // Calculator card click handlers
         // Calculator card click handlers
         document.querySelectorAll('.calculator-card').forEach(card => {
             if (!card.href) {  // Only add click handler to non-linked cards

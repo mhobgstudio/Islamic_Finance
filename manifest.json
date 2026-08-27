@@ -1,0 +1,10 @@
+{
+  "name": "Islamic Finance Hub — Zakat & Sadaqah Calculators",
+  "short_name": "Islamic Finance",
+  "description": "Sharia-compliant financial calculators for Zakat, Sadaqah, and Islamic wealth management",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f0fdf4",
+  "theme_color": "#065f46",
+  "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>", "sizes": "any", "type": "image/svg+xml"}]
+}

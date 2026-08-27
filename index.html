@@ -723,8 +723,7 @@
         <p><span>Nisab Met?</span><span>${netWealth >= nisab ? '✅ Yes' : '❌ No'}</span></p>
         <p><span>Zakat Rate</span><span>2.5%</span></p>
         <p style="font-weight:700;color:var(--emerald);font-size:1.1rem;"><span>Zakat Due</span><span>${fmt(zakatDue)}</span></p>
-        ${zakatDue === 0 ? '          <p style="color:#6b7280;font-style:italic;">Your wealth is below the Nisab threshold. No Zakat is due at this time.</p>
-          <p style="color:#6b7280;font-size:0.8rem;margin-top:8px;">⚠️ Note: Nisab values are approximate estimates based on market gold prices. Consult a qualified scholar for specific rulings.</p>' : ''}
+        ${zakatDue === 0 ? '<p style="color:#6b7280;font-style:italic;">Your wealth is below the Nisab threshold. No Zakat is due at this time.</p><p style="color:#6b7280;font-size:0.8rem;margin-top:8px;">⚠️ Note: Nisab values are approximate estimates based on market gold prices. Consult a qualified scholar for specific rulings.</p>' : ''}
       `;
     }
 
